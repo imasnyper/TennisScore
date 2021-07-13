@@ -18,6 +18,16 @@ Athlete::Athlete(string name) {
 	match = false;
 }
 
+bool Athlete::operator <(const Athlete& rhs) const
+{
+	return name < rhs.name;
+}
+
+bool Athlete::operator ==(const Athlete& rhs) const
+{
+	return name == rhs.name;
+}
+
 size_t Athlete::getPoints() {
 	return points;
 }
@@ -90,7 +100,7 @@ void Athlete::winMatch() {
 void Athlete::printScore() {
 	Scoring sco;
 	cout << setw(10) << name << ": ";
-	cout << setw(4) << sco.points.at(points).second << "\t";
-	cout << setw(4) << games << "\t";
-	cout << setw(4) << sets << endl;
+	cout << setw(4) << sco.points.at(points).second << "\t" << endl;
+	// cout << setw(4) << games << "\t";
+	// cout << setw(4) << sets << endl;
 }

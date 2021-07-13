@@ -4,15 +4,15 @@
 #include "Athlete.h"
 #include "Utils.h"
 
-typedef map<Athlete, size_t> AthleteSetGames;
-typedef pair<AthleteSetGames, AthleteSetGames> SetGames_T;
-typedef vector<SetGames_T> SetGamesList_T;
+typedef pair<size_t, size_t> CurrentSetScore_T;
+typedef vector<CurrentSetScore_T> MatchScore_T;
+// typedef vector<SetScore_T> MatchScore_T;
 
 class GameState {
-private:
 	Athlete athleteLeft, athleteRight;
 	bool deuce, tieBreak;
-	SetGamesList_T setGames;
+	CurrentSetScore_T currentSetScore;
+	MatchScore_T matchScore;
 
 	void _point(Athlete& pointWinner, Athlete& pointLoser);
 
@@ -31,11 +31,13 @@ public:
 
 	void printScore();
 
-	SetGamesList_T getSetGames();
+	void updateCurrentSetScore(size_t leftScore, size_t rightScore);
 
-	void setSetGames(SetGamesList_T setGames);
+	void resetCurrentSetScore();
 
-	void addSetGame(SetGames_T setGame);
+	CurrentSetScore_T getCurrentSetScore();
 
-	void printSetGames();
+	void addSetToMatch(CurrentSetScore_T currentSet);
+
+	MatchScore_T getMatchScore();
 };

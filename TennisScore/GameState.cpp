@@ -5,14 +5,14 @@ GameState::GameState() {
 	athleteLeft = Athlete("Left");
 	athleteRight = Athlete("Right");
 	deuce = false;
-	setGames = SetGamesList_T();
+	matchScore = MatchScore_T{};
 }
 
 GameState::GameState(Athlete left, Athlete right) {
 	athleteLeft = left;
 	athleteRight = right;
 	deuce = false;
-	setGames = SetGamesList_T();
+	matchScore = MatchScore_T{};
 }
 
 void GameState::_point(Athlete& pointWinner, Athlete& pointLoser) {
@@ -34,6 +34,8 @@ void GameState::_point(Athlete& pointWinner, Athlete& pointLoser) {
 }
 
 void GameState::_winGame(Athlete& gameWinner, Athlete& gameLoser) {
+	gameWinner == athleteLeft ? updateCurrentSetScore(1, 0) : updateCurrentSetScore(0, 1);
+	
 	gameWinner.newGame();
 	gameLoser.newGame();
 	if (gameWinner.getGames() == 5 && gameLoser.getGames() <= 4) {
@@ -47,12 +49,12 @@ void GameState::_winGame(Athlete& gameWinner, Athlete& gameLoser) {
 }
 
 void GameState::_winSet(Athlete& setWinner, Athlete& setLoser) {
-	addSetGame(
-		SetGames_T{ 
-			AthleteSetGames{{athleteLeft, athleteLeft.getGames()}},
-			AthleteSetGames{{athleteRight, athleteRight.getGames()}}
-		}
-	);
+	// addSetGame(
+	// 	SetGames_T{ 
+	// 		AthleteSetGames{{athleteLeft, athleteLeft.getGames()}},
+	// 		AthleteSetGames{{athleteRight, athleteRight.getGames()}}
+	// 	}
+	// );
 	setWinner.newSet();
 	setLoser.newSet();
 	if (setWinner.getSets() == 2)
@@ -70,24 +72,38 @@ void GameState::rightPoint() {
 }
 
 void GameState::printScore() {
+	// for(size_t i = 0; i < setGames.size(); i++)
+	// {
+	// 	cout << setGames.at(i).first[athleteLeft] << endl;
+	// 	cout << setGames.at(i).first[athleteRight] << endl;
+	// }
 	athleteLeft.printScore();
 	athleteRight.printScore();
 }
 
-SetGamesList_T GameState::getSetGames(){
-	return setGames;
+void GameState::updateCurrentSetScore(size_t leftScore, size_t rightScore)
+{
+	currentSetScore.first += leftScore;
+	currentSetScore.second += rightScore;
 }
 
-void GameState::setSetGames(SetGamesList_T setGames) {
-	this->setGames = setGames;
+void GameState::resetCurrentSetScore()
+{
+	currentSetScore.first = 0;
+	currentSetScore.second = 0;
 }
 
-void GameState::addSetGame(SetGames_T setGame) {
-	this->setGames.push_back(setGame);
+CurrentSetScore_T GameState::getCurrentSetScore()
+{
+	return currentSetScore;
 }
 
-void GameState::printSetGames() {
-	for (size_t i = 0; i < setGames.size(); i++) {
+void GameState::addSetToMatch(CurrentSetScore_T currentSet)
+{
+	matchScore.push_back(currentSet);
+}
 
-	}
+MatchScore_T GameState::getMatchScore()
+{
+	return matchScore;
 }

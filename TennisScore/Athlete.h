@@ -17,6 +17,10 @@ public:
 
 	Athlete(string name);
 
+	bool operator <(const Athlete& rhs) const;
+
+	bool operator ==(const Athlete& rhs) const;
+
 	size_t getPoints();
 
 	size_t getGames();
