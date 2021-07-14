@@ -6,7 +6,6 @@
 
 typedef pair<size_t, size_t> CurrentSetScore_T;
 typedef vector<CurrentSetScore_T> MatchScore_T;
-// typedef vector<SetScore_T> MatchScore_T;
 
 class GameState {
 	Athlete athleteLeft, athleteRight;
@@ -23,7 +22,7 @@ class GameState {
 public:
 	GameState();
 
-	GameState(Athlete left, Athlete right);
+	GameState(Athlete& left, Athlete& right);
 
 	void leftPoint();
 	
@@ -35,9 +34,15 @@ public:
 
 	void resetCurrentSetScore();
 
+	Athlete getAthleteLeft();
+
+	Athlete getAthleteRight();
+
 	CurrentSetScore_T getCurrentSetScore();
+
+	void updateDeuce();
 
 	void addSetToMatch(CurrentSetScore_T currentSet);
 
-	MatchScore_T getMatchScore();
+	bool matchWon();
 };

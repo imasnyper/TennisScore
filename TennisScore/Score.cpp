@@ -13,11 +13,12 @@ int main() {
 	athletes = getAthletes();
 	GameState state{athletes.first, athletes.second};
 
-	getchar();
-	while (!athletes.first.getMatch() && !athletes.second.getMatch()) {
+	char pointWinner;
+	while (!state.matchWon()) {
 		state.printScore();
-		cout << "L if left scored point, R if right scored point" << endl;
-		char pointWinner = getchar();
+		cout << "L if " << state.getAthleteLeft().name << " scored point, R if " << state.getAthleteRight().name << " scored point" << endl;
+		
+		cin >> pointWinner;
 		switch (pointWinner) {
 		case 'l':
 			state.leftPoint();

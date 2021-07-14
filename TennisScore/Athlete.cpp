@@ -66,6 +66,8 @@ void Athlete::setSets(size_t sets) {
 
 void Athlete::newGame() {
 	setPoints(0);
+	advantage = false;
+	tiebreakPoints = 0;
 }
 
 void Athlete::newSet() {
@@ -94,13 +96,22 @@ void Athlete::flipAdvantage() {
 }
 
 void Athlete::winMatch() {
+	cout << "Game, set and match, " << name << endl;
 	match = true;
 }
 
-void Athlete::printScore() {
+void Athlete::printMatchScore(vector<size_t> matchScores, size_t currentSetScore, bool tieBreak) {
 	Scoring sco;
 	cout << setw(10) << name << ": ";
-	cout << setw(4) << sco.points.at(points).second << "\t" << endl;
-	// cout << setw(4) << games << "\t";
-	// cout << setw(4) << sets << endl;
+	for (size_t i = 0; i < matchScores.size(); i++) {
+		cout << setw(4) << matchScores.at(i);
+	}
+	cout << setw(4) << currentSetScore;
+	if (tieBreak) {
+		cout << setw(4) << tiebreakPoints;
+	}
+	else {
+		cout << setw(4) << sco.points.at(points).second << "\t";
+	}
+	cout << endl;
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -55,5 +56,5 @@ public:
 
 	void winMatch();
 
-	void printScore();
+	void printMatchScore(vector<size_t> matchScores, size_t currentSetScore, bool tieBreak);
 };
