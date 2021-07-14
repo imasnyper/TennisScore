@@ -10,8 +10,8 @@ typedef vector<CurrentSetScore_T> MatchScore_T;
 class GameState {
 	Athlete athleteLeft, athleteRight;
 	bool deuce, tieBreak;
-	CurrentSetScore_T currentSetScore;
 	MatchScore_T matchScore;
+	Athlete *gameWinner, *setWinner;
 
 	void _point(Athlete& pointWinner, Athlete& pointLoser);
 
@@ -30,19 +30,23 @@ public:
 
 	void printScore();
 
-	void updateCurrentSetScore(size_t leftScore, size_t rightScore);
-
-	void resetCurrentSetScore();
-
 	Athlete getAthleteLeft();
 
 	Athlete getAthleteRight();
-
-	CurrentSetScore_T getCurrentSetScore();
 
 	void updateDeuce();
 
 	void addSetToMatch(CurrentSetScore_T currentSet);
 
 	bool matchWon();
+
+	Athlete* getDeuceAdvantage();
+
+	bool getDeuce();
+
+	bool getTiebreak();
+
+	void *getGameWinner(Athlete& winner);
+
+	void *getSetWinner(Athlete& winner);
 };

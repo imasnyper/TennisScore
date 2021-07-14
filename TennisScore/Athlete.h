@@ -22,6 +22,8 @@ public:
 
 	bool operator ==(const Athlete& rhs) const;
 
+	bool operator !=(const Athlete& rhs) const;
+
 	size_t getPoints();
 
 	size_t getGames();
@@ -37,8 +39,6 @@ public:
 	void setPoints(size_t points);
 
 	void setGames(size_t games);
-
-	void setSets(size_t sets);
 
 	void newGame();
 
@@ -56,5 +56,5 @@ public:
 
 	void winMatch();
 
-	void printMatchScore(vector<size_t> matchScores, size_t currentSetScore, bool tieBreak);
+	void printMatchScore(vector<size_t> matchScores, bool tieBreak);
 };

@@ -155,7 +155,7 @@
   <ItemGroup>
     <ClInclude Include="Athlete.h" />
     <ClInclude Include="GameState.h" />
-    <ClInclude Include="Scoring.h" />
+    <ClInclude Include="TerminalColors.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

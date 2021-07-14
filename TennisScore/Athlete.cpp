@@ -2,6 +2,8 @@
 #include "Scoring.h"
 #include <iomanip>
 
+#include "TerminalColors.h"
+
 Athlete::Athlete() {
 	name = "Athlete";
 	points = 0, games = 0, sets = 0;
@@ -26,6 +28,11 @@ bool Athlete::operator <(const Athlete& rhs) const
 bool Athlete::operator ==(const Athlete& rhs) const
 {
 	return name == rhs.name;
+}
+
+bool Athlete::operator !=(const Athlete& rhs) const
+{
+	return name != rhs.name;
 }
 
 size_t Athlete::getPoints() {
@@ -60,10 +67,6 @@ void Athlete::setGames(size_t games) {
 	this->games = games;
 }
 
-void Athlete::setSets(size_t sets) {
-	this->sets = sets;
-}
-
 void Athlete::newGame() {
 	setPoints(0);
 	advantage = false;
@@ -96,22 +99,59 @@ void Athlete::flipAdvantage() {
 }
 
 void Athlete::winMatch() {
-	cout << "Game, set and match, " << name << endl;
 	match = true;
 }
 
-void Athlete::printMatchScore(vector<size_t> matchScores, size_t currentSetScore, bool tieBreak) {
-	Scoring sco;
+void Athlete::printMatchScore(vector<size_t> matchScores, bool tieBreak) {
+	vector<pair<size_t, size_t>> pointConversion{
+		pair(0, 0), pair(1, 15), pair(2, 30), pair(3, 40) };
+
+	Color::Modifier fg_black(Color::FG_BLACK);
+	Color::Modifier bg_white(Color::BG_WHITE);
+	Color::Modifier bg_default(Color::BG_DEFAULT);
+	Color::Modifier fg_default(Color::FG_DEFAULT);
+	Color::Modifier bg_blue(Color::BG_BLUE);
+	Color::Modifier fg_white(Color::FG_WHITE);
+	Color::Modifier bg_bblack(Color::BG_BBLACK);
+	Color::Modifier bg_bmagenta(Color::BG_BMAGENTA);
+
+	// Athlete Name:
 	cout << setw(10) << name << ": ";
+
+	// color format for previous sets
+	cout << fg_black;
+	
+	// Athlete games won in each set:
 	for (size_t i = 0; i < matchScores.size(); i++) {
+		if (i % 2 == 0)
+			cout << bg_white;
+		else
+			cout << bg_bblack;
 		cout << setw(4) << matchScores.at(i);
 	}
-	cout << setw(4) << currentSetScore;
+
+	// normal colors
+	cout << fg_default << bg_default;
+
+	// Athlete current set games won:
+	cout << setw(4) << getGames();
+
+	// current set points color
+	cout << fg_white;
+	
+	// Current set points. If set is in tiebreak, tiebreak points instead.
 	if (tieBreak) {
+		cout << bg_bmagenta;
 		cout << setw(4) << tiebreakPoints;
 	}
 	else {
-		cout << setw(4) << sco.points.at(points).second << "\t";
+		cout << bg_blue;
+		cout << setw(4) << pointConversion.at(points).second << "\t";
 	}
+
+	// normal colors
+	cout << fg_default << bg_default;
+
+	// end the line
 	cout << endl;
 }
