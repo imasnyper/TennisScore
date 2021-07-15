@@ -1,11 +1,11 @@
-#include "Athlete.h"
-#include "Scoring.h"
+﻿#include "Athlete.h"
 #include <iomanip>
 
 #include "TerminalColors.h"
 
 Athlete::Athlete() {
 	name = "Athlete";
+	serving = false;
 	points = 0, games = 0, sets = 0;
 	tiebreakPoints = 0;
 	advantage = false;
@@ -14,6 +14,7 @@ Athlete::Athlete() {
 
 Athlete::Athlete(string name) {
 	this->name = name;
+	serving = false;
 	points = 0, games = 0, sets = 0;
 	tiebreakPoints = 0;
 	advantage = false;
@@ -34,6 +35,17 @@ bool Athlete::operator !=(const Athlete& rhs) const
 {
 	return name != rhs.name;
 }
+
+bool Athlete::getServing()
+{
+	return serving;
+}
+
+void Athlete::setServing(bool serving)
+{
+	this->serving = serving;
+}
+
 
 size_t Athlete::getPoints() {
 	return points;
@@ -71,6 +83,7 @@ void Athlete::newGame() {
 	setPoints(0);
 	advantage = false;
 	tiebreakPoints = 0;
+	serving = !serving;
 }
 
 void Athlete::newSet() {
@@ -115,6 +128,11 @@ void Athlete::printMatchScore(vector<size_t> matchScores, bool tieBreak) {
 	Color::Modifier bg_bblack(Color::BG_BBLACK);
 	Color::Modifier bg_bmagenta(Color::BG_BMAGENTA);
 
+	if (serving)
+		cout << ">";
+	else
+		cout << " ";
+	
 	// Athlete Name:
 	cout << setw(10) << name << ": ";
 
@@ -133,25 +151,28 @@ void Athlete::printMatchScore(vector<size_t> matchScores, bool tieBreak) {
 	// normal colors
 	cout << fg_default << bg_default;
 
-	// Athlete current set games won:
-	cout << setw(4) << getGames();
+	if (!matchWon) {
 
-	// current set points color
-	cout << fg_white;
-	
-	// Current set points. If set is in tiebreak, tiebreak points instead.
-	if (tieBreak) {
-		cout << bg_bmagenta;
-		cout << setw(4) << tiebreakPoints;
+		// Athlete current set games won:
+		cout << setw(4) << getGames();
+
+		// current set points color
+		cout << fg_white;
+
+		// Current set points. If set is in tiebreak, tiebreak points instead.
+		if (tieBreak) {
+			cout << bg_bmagenta;
+			cout << setw(4) << tiebreakPoints;
+		}
+		else {
+			cout << bg_blue;
+			cout << setw(4) << pointConversion.at(points).second << "\t";
+		}
+
+		// normal colors
+		cout << fg_default << bg_default;
 	}
-	else {
-		cout << bg_blue;
-		cout << setw(4) << pointConversion.at(points).second << "\t";
-	}
-
-	// normal colors
-	cout << fg_default << bg_default;
-
+		
 	// end the line
 	cout << endl;
 }

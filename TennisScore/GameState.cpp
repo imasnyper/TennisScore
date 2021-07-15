@@ -1,6 +1,8 @@
 #include "GameState.h"
 #include "Athlete.h"
 
+bool Athlete::matchWon;
+
 GameState::GameState()
 {
 	athleteLeft = Athlete("Left");
@@ -22,11 +24,14 @@ void GameState::_point(Athlete& pointWinner, Athlete& pointLoser)
 	if (tieBreak)
 	{
 		pointWinner.increaseTiebreakPoints();
-		if (pointWinner.getTiebreakPoints() >= 7 && pointWinner.getTiebreakPoints() - pointLoser.getTiebreakPoints() > 1)
+
+		int tiebreakDifference = (int)pointWinner.getTiebreakPoints() - (int)pointLoser.getTiebreakPoints();
+		if (pointWinner.getTiebreakPoints() >= 7 && tiebreakDifference > 1)
 		{
 			_winGame(pointWinner, pointLoser);
 		}
-			
+		else if (pointWinner.getTiebreakPoints() >= 6 && tiebreakDifference > 0)
+			setSetPoint(&pointWinner);
 	}
 	else if (!deuce && pointWinner.getPoints() == 3)
 	{
@@ -39,25 +44,35 @@ void GameState::_point(Athlete& pointWinner, Athlete& pointLoser)
 	}
 	else if (deuce && !pointWinner.getAdvantage() && !pointLoser.getAdvantage())
 	{
-		cout << "Advantage " << pointWinner.name << endl;
 		pointWinner.flipAdvantage();
+		setGamePoint(&pointWinner);
 	}
 	else if (deuce && !pointWinner.getAdvantage() && pointLoser.getAdvantage())
 	{
-		cout << "Deuce" << endl;
 		pointLoser.flipAdvantage();
 	}
 	else if (!deuce)
 	{
 		pointWinner.increasePoints();
 		updateDeuce();
+
+		if (!deuce && pointWinner.getPoints() == 3)
+		{
+			const int gameDifference = static_cast<int>(pointWinner.getGames()) - static_cast<int>(pointLoser.getGames());
+			if (pointWinner.getSets() == 2)
+				setMatchPoint(&pointWinner);
+			else if (pointWinner.getGames() >= 5 && gameDifference > 0)
+				setSetPoint(&pointWinner);
+			else
+				setGamePoint(&pointWinner);
+		}
 	}
 }
 
 void GameState::_winGame(Athlete& gameWinner, Athlete& gameLoser)
 {
 	this->gameWinner = &gameWinner;
-	
+
 	gameWinner.newGame();
 	gameLoser.newGame();
 
@@ -69,7 +84,6 @@ void GameState::_winGame(Athlete& gameWinner, Athlete& gameLoser)
 	else if (gameWinner.getGames() == 5 && gameLoser.getGames() == 6)
 	{
 		gameWinner.increaseGames();
-		cout << "Tiebreak " << endl;
 		tieBreak = true;
 	}
 	else if (gameWinner.getGames() >= 5 && gameWinner.getGames() - gameLoser.getGames() > 0)
@@ -81,7 +95,6 @@ void GameState::_winGame(Athlete& gameWinner, Athlete& gameLoser)
 
 	else if (gameWinner.getGames() <= 6)
 	{
-		cout << "Game, " << gameWinner.name << endl;
 		gameWinner.increaseGames();
 	}
 }
@@ -89,7 +102,7 @@ void GameState::_winGame(Athlete& gameWinner, Athlete& gameLoser)
 void GameState::_winSet(Athlete& setWinner, Athlete& setLoser)
 {
 	this->setWinner = &setWinner;
-	
+
 	tieBreak = false;
 	addSetToMatch(CurrentSetScore_T{athleteLeft.getGames(), athleteRight.getGames()});
 
@@ -99,12 +112,12 @@ void GameState::_winSet(Athlete& setWinner, Athlete& setLoser)
 	if (setWinner.getSets() == 2)
 	{
 		setWinner.increaseSets();
+		Athlete::matchWon = true;
 		setWinner.winMatch();
 	}
 	else
 	{
 		setWinner.increaseSets();
-		cout << "Game, set, " << setWinner.name << endl;
 	}
 }
 
@@ -144,8 +157,6 @@ Athlete GameState::getAthleteRight()
 void GameState::updateDeuce()
 {
 	deuce = athleteLeft.getPoints() == 3 && athleteRight.getPoints() == 3;
-	if (deuce)
-		cout << "Deuce" << endl;
 }
 
 void GameState::addSetToMatch(CurrentSetScore_T currentSet)
@@ -160,7 +171,7 @@ bool GameState::matchWon()
 
 Athlete* GameState::getDeuceAdvantage()
 {
-	if(deuce)
+	if (deuce)
 	{
 		if (athleteRight.getAdvantage())
 			return &athleteRight;
@@ -180,9 +191,10 @@ bool GameState::getTiebreak()
 	return tieBreak;
 }
 
-void *GameState::getGameWinner(Athlete& winner)
+void* GameState::getGameWinner(Athlete& winner)
 {
-	if (gameWinner) {
+	if (gameWinner)
+	{
 		winner = *gameWinner;
 		gameWinner = nullptr;
 		return &winner;
@@ -190,12 +202,61 @@ void *GameState::getGameWinner(Athlete& winner)
 	return nullptr;
 }
 
-void *GameState::getSetWinner(Athlete& winner)
+void* GameState::getSetWinner(Athlete& winner)
 {
-	if (setWinner) {
+	if (setWinner)
+	{
 		winner = *setWinner;
 		setWinner = nullptr;
 		return &winner;
 	}
 	return nullptr;
+}
+
+void* GameState::getGamePoint(Athlete& athlete)
+{
+	if (gamePoint)
+	{
+		athlete = *gamePoint;
+		gamePoint = nullptr;
+		return &athlete;
+	}
+	return nullptr;
+}
+
+void* GameState::getSetPoint(Athlete& athlete)
+{
+	if (setPoint)
+	{
+		athlete = *setPoint;
+		setPoint = nullptr;
+		return &athlete;
+	}
+	return nullptr;
+}
+
+void* GameState::getMatchPoint(Athlete& athlete)
+{
+	if (matchPoint)
+	{
+		athlete = *matchPoint;
+		matchPoint = nullptr;
+		return &athlete;
+	}
+	return nullptr;
+}
+
+void GameState::setGamePoint(Athlete* athlete)
+{
+	gamePoint = athlete;
+}
+
+void GameState::setSetPoint(Athlete* athlete)
+{
+	setPoint = athlete;
+}
+
+void GameState::setMatchPoint(Athlete* athlete)
+{
+	matchPoint = athlete;
 }

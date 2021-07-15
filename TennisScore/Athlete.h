@@ -4,15 +4,17 @@
 
 using namespace std;
 
-class Athlete {
-private:
+class Athlete {	
+	bool serving;
 	size_t points, games, sets;
 	size_t tiebreakPoints;
 	bool advantage;
 	bool match;
+	
 
 public:
 	string name;
+	static bool matchWon;
 
 	Athlete();
 
@@ -23,6 +25,10 @@ public:
 	bool operator ==(const Athlete& rhs) const;
 
 	bool operator !=(const Athlete& rhs) const;
+
+	bool getServing();
+
+	void setServing(bool serving);
 
 	size_t getPoints();
 

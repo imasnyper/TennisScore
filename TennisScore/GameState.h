@@ -1,8 +1,5 @@
 #pragma once
-#include <map>
-#include <vector>
 #include "Athlete.h"
-#include "Utils.h"
 
 typedef pair<size_t, size_t> CurrentSetScore_T;
 typedef vector<CurrentSetScore_T> MatchScore_T;
@@ -12,6 +9,7 @@ class GameState {
 	bool deuce, tieBreak;
 	MatchScore_T matchScore;
 	Athlete *gameWinner, *setWinner;
+	Athlete* gamePoint, * setPoint, * matchPoint;
 
 	void _point(Athlete& pointWinner, Athlete& pointLoser);
 
@@ -49,4 +47,16 @@ public:
 	void *getGameWinner(Athlete& winner);
 
 	void *getSetWinner(Athlete& winner);
+
+	void* getGamePoint(Athlete& athlete);
+
+	void* getSetPoint(Athlete& athlete);
+
+	void* getMatchPoint(Athlete& athlete);
+
+	void setGamePoint(Athlete* athlete);
+
+	void setSetPoint(Athlete* athlete);
+
+	void setMatchPoint(Athlete* athlete);
 };
