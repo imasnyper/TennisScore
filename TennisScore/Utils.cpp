@@ -92,7 +92,7 @@ void printGameInformation(GameState& state)
 
 	cout << endl;
 
-	cout << "L if " << state.getAthleteLeft().name << " scored point, R if " << state.getAthleteRight().name << " scored point" << endl;
+	cout << "L or 1 if " << state.getAthleteLeft().name << " scored point, R or 2 if " << state.getAthleteRight().name << " scored point" << endl;
 }
 
 void getPointWinner(GameState& state)
@@ -103,14 +103,14 @@ void getPointWinner(GameState& state)
 	cin.ignore(cin.rdbuf()->in_avail(), '\n');
 	
 	cin >> pointWinner;
-	switch (pointWinner) {
-	case 'l':
+
+	if(isupper(pointWinner))
+		pointWinner = tolower(pointWinner);
+	
+	if (pointWinner == 'l' || pointWinner == '1')
 		state.leftPoint();
-		break;
-	case 'r':
+	else if (pointWinner == 'r' || pointWinner == '2')
 		state.rightPoint();
-		break;
-	}
 }
 
 void printMatchEnd(GameState& state)
@@ -121,5 +121,5 @@ void printMatchEnd(GameState& state)
 	if (state.getAthleteLeft().getMatch())
 		cout << "Game, set and match, " << state.getAthleteLeft().name << endl;
 	else
-		cout << "Game, set and match, " << state.getAthleteLeft().name << endl;
+		cout << "Game, set and match, " << state.getAthleteRight().name << endl;
 }

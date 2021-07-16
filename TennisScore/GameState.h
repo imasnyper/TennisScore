@@ -10,6 +10,7 @@ class GameState {
 	MatchScore_T matchScore;
 	Athlete *gameWinner, *setWinner;
 	Athlete* gamePoint, * setPoint, * matchPoint;
+	size_t setNumber = 0;
 
 	void _point(Athlete& pointWinner, Athlete& pointLoser);
 
@@ -59,4 +60,12 @@ public:
 	void setSetPoint(Athlete* athlete);
 
 	void setMatchPoint(Athlete* athlete);
+
+	Athlete* calculateTiebreakSetPoint();
+
+	void calculateGameSetMatchPoint();
+
+	void incrementSetNumber();
+
+	size_t getSetNumber();
 };

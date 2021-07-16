@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include <map>
 
 using namespace std;
 
@@ -10,7 +11,7 @@ class Athlete {
 	size_t tiebreakPoints;
 	bool advantage;
 	bool match;
-	
+	map<size_t, size_t> tiebreakSetPoints;
 
 public:
 	string name;
@@ -63,4 +64,10 @@ public:
 	void winMatch();
 
 	void printMatchScore(vector<size_t> matchScores, bool tieBreak);
+
+	void setTiebreakSetPoints(size_t setNumber, size_t tiebreakSetPointsWon);
+
+	size_t checkTiebreakSetPoints(size_t set);
+
+	size_t getTiebreakSetPoints(size_t set);
 };

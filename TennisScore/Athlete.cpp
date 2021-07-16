@@ -127,6 +127,7 @@ void Athlete::printMatchScore(vector<size_t> matchScores, bool tieBreak) {
 	Color::Modifier fg_white(Color::FG_WHITE);
 	Color::Modifier bg_bblack(Color::BG_BBLACK);
 	Color::Modifier bg_bmagenta(Color::BG_BMAGENTA);
+	Color::Modifier fg_lmagenta(Color::FG_LIGHT_MAGENTA);
 
 	if (serving)
 		cout << ">";
@@ -135,17 +136,22 @@ void Athlete::printMatchScore(vector<size_t> matchScores, bool tieBreak) {
 	
 	// Athlete Name:
 	cout << setw(10) << name << ": ";
-
-	// color format for previous sets
-	cout << fg_black;
 	
 	// Athlete games won in each set:
 	for (size_t i = 0; i < matchScores.size(); i++) {
+		cout << fg_black;
 		if (i % 2 == 0)
 			cout << bg_white;
 		else
 			cout << bg_bblack;
 		cout << setw(4) << matchScores.at(i);
+
+		if(checkTiebreakSetPoints(i) != 0)
+		{
+			size_t setTiebreakPoints = getTiebreakSetPoints(i);
+			cout << fg_lmagenta;
+			cout << setw(2) << setTiebreakPoints;
+		}
 	}
 
 	// normal colors
@@ -175,4 +181,20 @@ void Athlete::printMatchScore(vector<size_t> matchScores, bool tieBreak) {
 		
 	// end the line
 	cout << endl;
+}
+
+void Athlete::setTiebreakSetPoints(size_t setNumber, size_t tiebreakSetPointsWon)
+{
+	this->tiebreakSetPoints[setNumber] = tiebreakSetPointsWon;
+}
+
+size_t Athlete::checkTiebreakSetPoints(size_t set)
+{
+	return tiebreakSetPoints.count(set);
+}
+
+
+size_t Athlete::getTiebreakSetPoints(size_t set)
+{
+	return tiebreakSetPoints.at(set);
 }

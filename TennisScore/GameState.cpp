@@ -25,13 +25,17 @@ void GameState::_point(Athlete& pointWinner, Athlete& pointLoser)
 	{
 		pointWinner.increaseTiebreakPoints();
 
-		int tiebreakDifference = (int)pointWinner.getTiebreakPoints() - (int)pointLoser.getTiebreakPoints();
+		int tiebreakDifference = static_cast<int>(pointWinner.getTiebreakPoints()) - static_cast<int>(pointLoser.getTiebreakPoints());
 		if (pointWinner.getTiebreakPoints() >= 7 && tiebreakDifference > 1)
 		{
-			_winGame(pointWinner, pointLoser);
+			athleteLeft.setTiebreakSetPoints(setNumber, athleteLeft.getTiebreakPoints());
+			athleteRight.setTiebreakSetPoints(setNumber, athleteRight.getTiebreakPoints());
+			_winGame(pointWinner, pointLoser);			
 		}
-		else if (pointWinner.getTiebreakPoints() >= 6 && tiebreakDifference > 0)
-			setSetPoint(&pointWinner);
+
+		Athlete* setPoint = calculateTiebreakSetPoint();
+		if (setPoint)
+			setSetPoint(setPoint);
 	}
 	else if (!deuce && pointWinner.getPoints() == 3)
 	{
@@ -56,25 +60,18 @@ void GameState::_point(Athlete& pointWinner, Athlete& pointLoser)
 		pointWinner.increasePoints();
 		updateDeuce();
 
-		if (!deuce && pointWinner.getPoints() == 3)
-		{
-			const int gameDifference = static_cast<int>(pointWinner.getGames()) - static_cast<int>(pointLoser.getGames());
-			if (pointWinner.getSets() == 2)
-				setMatchPoint(&pointWinner);
-			else if (pointWinner.getGames() >= 5 && gameDifference > 0)
-				setSetPoint(&pointWinner);
-			else
-				setGamePoint(&pointWinner);
-		}
+		calculateGameSetMatchPoint();
 	}
 }
 
 void GameState::_winGame(Athlete& gameWinner, Athlete& gameLoser)
 {
 	this->gameWinner = &gameWinner;
+	this->gamePoint = nullptr;
 
 	gameWinner.newGame();
 	gameLoser.newGame();
+	
 
 	if (tieBreak)
 	{
@@ -101,7 +98,9 @@ void GameState::_winGame(Athlete& gameWinner, Athlete& gameLoser)
 
 void GameState::_winSet(Athlete& setWinner, Athlete& setLoser)
 {
+	this->setPoint = nullptr;
 	this->setWinner = &setWinner;
+	incrementSetNumber();
 
 	tieBreak = false;
 	addSetToMatch(CurrentSetScore_T{athleteLeft.getGames(), athleteRight.getGames()});
@@ -229,7 +228,6 @@ void* GameState::getSetPoint(Athlete& athlete)
 	if (setPoint)
 	{
 		athlete = *setPoint;
-		setPoint = nullptr;
 		return &athlete;
 	}
 	return nullptr;
@@ -240,7 +238,6 @@ void* GameState::getMatchPoint(Athlete& athlete)
 	if (matchPoint)
 	{
 		athlete = *matchPoint;
-		matchPoint = nullptr;
 		return &athlete;
 	}
 	return nullptr;
@@ -259,4 +256,80 @@ void GameState::setSetPoint(Athlete* athlete)
 void GameState::setMatchPoint(Athlete* athlete)
 {
 	matchPoint = athlete;
+}
+
+Athlete* GameState::calculateTiebreakSetPoint()
+{
+	if (athleteLeft.getTiebreakPoints() == athleteRight.getTiebreakPoints()) {
+		setPoint = nullptr;
+		return nullptr;
+
+	}
+
+	if (athleteLeft.getTiebreakPoints() > athleteRight.getTiebreakPoints()) {
+		const int tiebreakDifference = static_cast<int>(athleteLeft.getTiebreakPoints()) - 
+			static_cast<int>(athleteRight.getTiebreakPoints());
+		if (athleteLeft.getTiebreakPoints() >= 6 && tiebreakDifference > 0)
+			return &athleteLeft;
+	}
+
+	if (athleteRight.getTiebreakPoints() > athleteLeft.getTiebreakPoints()) {
+		const int tiebreakDifference = static_cast<int>(athleteRight.getTiebreakPoints()) - 
+			static_cast<int>(athleteLeft.getTiebreakPoints());
+		if (athleteRight.getTiebreakPoints() >= 6 && tiebreakDifference > 0)
+			return &athleteRight;
+	}
+
+	return nullptr;
+}
+
+void GameState::calculateGameSetMatchPoint()
+{
+	if (athleteLeft.getPoints() == athleteRight.getPoints())
+		gamePoint = nullptr;
+	
+	
+	if(athleteLeft.getGames() == athleteRight.getGames())
+		setPoint = nullptr;
+
+	if(!deuce)
+	{
+		if(athleteLeft.getPoints() > athleteRight.getPoints())
+		{
+			const int gameDifference = static_cast<int>(athleteLeft.getGames()) - static_cast<int>(athleteRight.getGames());
+			if(athleteLeft.getPoints() == 3)
+			{
+				if (athleteLeft.getSets() == 2 && athleteLeft.getGames() >= 5 && gameDifference > 0)
+					setMatchPoint(&athleteLeft);
+				else if (athleteLeft.getGames() >= 5 && gameDifference > 0)
+					setSetPoint(&athleteLeft);
+				else
+					setGamePoint(&athleteLeft);
+			}
+		}
+		else if (athleteRight.getPoints() > athleteLeft.getPoints())
+		{
+			const int gameDifference = static_cast<int>(athleteRight.getGames()) - static_cast<int>(athleteLeft.getGames());
+			if (athleteRight.getPoints() == 3)
+			{
+				if (athleteRight.getSets() == 2 && athleteRight.getGames() >= 5 && gameDifference > 0)
+					setMatchPoint(&athleteRight);
+				else if (athleteRight.getGames() >= 5 && gameDifference > 0)
+					setSetPoint(&athleteRight);
+				else
+					setGamePoint(&athleteRight);
+			}
+		}
+	}
+	else
+	{
+		gamePoint = nullptr;
+		setPoint = nullptr;
+		matchPoint = nullptr;
+	}
+}
+
+void GameState::incrementSetNumber()
+{
+	setNumber += 1;
 }
