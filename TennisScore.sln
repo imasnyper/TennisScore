@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.31313.79
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TennisScore", "TennisScore\TennisScore.vcxproj", "{82C5950A-0D6E-4009-BD7A-B96FFE3B009F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestTennisScore", "TestTennisScore\TestTennisScore.vcxproj", "{40903BBC-06C6-4C4A-A79D-087DD86DD74D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -23,14 +21,6 @@ Global
 		{82C5950A-0D6E-4009-BD7A-B96FFE3B009F}.Release|x64.Build.0 = Release|x64
 		{82C5950A-0D6E-4009-BD7A-B96FFE3B009F}.Release|x86.ActiveCfg = Release|Win32
 		{82C5950A-0D6E-4009-BD7A-B96FFE3B009F}.Release|x86.Build.0 = Release|Win32
-		{40903BBC-06C6-4C4A-A79D-087DD86DD74D}.Debug|x64.ActiveCfg = Debug|x64
-		{40903BBC-06C6-4C4A-A79D-087DD86DD74D}.Debug|x64.Build.0 = Debug|x64
-		{40903BBC-06C6-4C4A-A79D-087DD86DD74D}.Debug|x86.ActiveCfg = Debug|Win32
-		{40903BBC-06C6-4C4A-A79D-087DD86DD74D}.Debug|x86.Build.0 = Debug|Win32
-		{40903BBC-06C6-4C4A-A79D-087DD86DD74D}.Release|x64.ActiveCfg = Release|x64
-		{40903BBC-06C6-4C4A-A79D-087DD86DD74D}.Release|x64.Build.0 = Release|x64
-		{40903BBC-06C6-4C4A-A79D-087DD86DD74D}.Release|x86.ActiveCfg = Release|Win32
-		{40903BBC-06C6-4C4A-A79D-087DD86DD74D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
